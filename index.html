@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Piano Quest</title>
+<meta name="description" content="A right-hand piano learning game for iPad. Progress at your own pace through C, F, G and B-flat major with touch or a MIDI keyboard.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Piano Quest">
+<meta name="theme-color" content="#131836">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- app:start -->
+<div id="viewport"><div id="fit">
+<main id="stage">
+
+  <section class="screen" id="screen-map">
+    <header class="map-top">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 52 52" aria-hidden="true">
+          <rect x="1" y="1" width="50" height="50" rx="13" fill="#1b2150"/>
+          <rect x="8" y="10" width="10" height="32" rx="2.5" fill="#fff"/><rect x="21" y="10" width="10" height="32" rx="2.5" fill="#fff"/><rect x="34" y="10" width="10" height="32" rx="2.5" fill="#fff"/>
+          <rect x="15.5" y="10" width="8" height="19" rx="2" fill="#f28c0f"/><rect x="28.5" y="10" width="8" height="19" rx="2" fill="#2b7fe0"/>
+        </svg>
+        <div>
+          <h1>Piano Quest</h1>
+          <p>A right-hand journey in four keys</p>
+        </div>
+      </div>
+      <div class="rank" id="rank"></div>
+      <div class="stats" id="stats"></div>
+      <nav class="map-nav">
+        <button class="btn" id="open-badges">Badges</button>
+        <button class="btn" id="open-free">Free Play</button>
+        <button class="btn" id="open-settings">Settings</button>
+      </nav>
+    </header>
+    <div class="worlds" id="worlds"></div>
+    <div class="trail" id="trail"></div>
+  </section>
+
+  <section class="screen" id="screen-play" hidden>
+    <header class="play-top">
+      <button class="btn" id="play-back"><svg viewBox="0 0 20 20"><path d="M12.5 3 5 10l7.5 7 1.6-1.7L8.4 10l5.7-5.3z"/></svg>Map</button>
+      <div class="play-heading">
+        <span class="chip" id="play-chip"></span>
+        <h2 id="play-title"></h2>
+        <span class="credit" id="play-credit"></span>
+      </div>
+      <div class="midi-chip" data-midi-chip><i></i><span></span></div>
+      <button class="btn" id="play-settings">Settings</button>
+    </header>
+    <div class="coach-row">
+      <div class="coach" id="coach"></div>
+      <div class="meters">
+        <div class="meter-text"><span id="meter-count"></span><span class="streak" id="meter-streak"></span></div>
+        <div class="progress"><i id="meter-bar"></i></div>
+      </div>
+    </div>
+    <div class="staff-card">
+      <svg id="staff" role="img" aria-label="Music to play"></svg>
+      <div class="verdict" id="verdict"></div>
+      <div class="countin" id="countin" hidden></div>
+    </div>
+    <div class="modebar">
+      <button class="btn" id="btn-listen"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l10-6.5z"/></svg><span>Listen first</span></button>
+      <button class="btn" id="btn-restart"><svg viewBox="0 0 20 20"><path d="M10 3a7 7 0 1 0 6.7 9h-2.4A4.8 4.8 0 1 1 10 5.2c1.3 0 2.5.5 3.3 1.4L11 9h6V3l-2.1 2.1A7 7 0 0 0 10 3z"/></svg>Start over</button>
+      <div class="beat-group" id="beat-group">
+        <div class="label">Beat Challenge<small id="beat-note"></small></div>
+        <button class="btn" data-tempo="1"><i></i>Slow</button>
+        <button class="btn" data-tempo="2"><i></i>Steady</button>
+        <button class="btn" data-tempo="3"><i></i>Quick</button>
+      </div>
+    </div>
+    <div class="keyboard-wrap"><div class="keyboard" id="play-keys"></div></div>
+  </section>
+
+  <section class="screen" id="screen-free" hidden>
+    <header class="play-top">
+      <button class="btn" id="free-back"><svg viewBox="0 0 20 20"><path d="M12.5 3 5 10l7.5 7 1.6-1.7L8.4 10l5.7-5.3z"/></svg>Map</button>
+      <div class="play-heading"><h2>Free Play</h2><span class="credit">No goals, no scores. Just explore.</span></div>
+      <div class="midi-chip" data-midi-chip><i></i><span></span></div>
+    </header>
+    <div class="free-body">
+      <div class="free-staff"><svg id="free-staff" role="img" aria-label="The note you played"></svg></div>
+      <div class="free-info">
+        <div class="free-note" id="free-note">&nbsp;</div>
+        <p id="free-text">Press any key to see its name and where it sits on the staff.</p>
+        <p class="sub">Middle C is the key with the dot. Notes on this staff are written for the right hand, in the treble clef.</p>
+      </div>
+    </div>
+    <div class="keyboard-wrap"><div class="keyboard" id="free-keys"></div></div>
+  </section>
+
+  <div class="overlay" id="overlay" hidden><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+  <div class="toast" id="toast" hidden role="status"></div>
+</main>
+</div></div>
+<!-- app:end -->
+<script src="js/glyphs.js"></script>
+<script src="js/curriculum.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/store.js"></script>
+<script src="js/staff.js"></script>
+<script src="js/input.js"></script>
+<script src="js/session.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "piano-quest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A right-hand piano learning game for iPad with touch and MIDI controls.",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node tools/validate.mjs && node tools/test-rules.mjs",
+    "build:single": "node tools/build-single.mjs"
+  }
+}
