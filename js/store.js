@@ -3,6 +3,7 @@
  * Progress is self-paced: nothing is ever lost and nothing times out.
  *   Stars   1 for finishing an exercise, 2 and 3 for cleaner playing.
  *   Crowns  from the optional Beat Challenge: bronze, silver, gold by tempo.
+ *           Every timed run gets a percentage grade; 80% or more wins the crown.
  *   XP      for every finished run, with bonuses for new stars and crowns.
  *   Streak  days in a row with at least one finished exercise.
  *   Goal    three finished exercises a day.
@@ -225,7 +226,10 @@
     const level = worlds()[wi].levels[li];
     const r = Object.assign({}, rec(level.id));
     const score = result.notes ? Math.max(0, result.hits - 0.5 * result.extras) / result.notes : 0;
+    const grade = Math.floor(score * 100 + 1e-9);   // the percentage shown to the player
     const won = score >= 0.8;
+    const bestBefore = r.grade || 0;
+    r.grade = Math.max(bestBefore, grade);
     const parts = [{ label: 'Beat Challenge played', xp: 10 }];
     let newCrown = 0;
     if (won && result.tempo > r.crown) {
@@ -238,7 +242,7 @@
     state.stats.notes += result.hits;
     const badges = [];
     const goalHit = finishRun(parts, badges);
-    return settle(parts, badges, { score, won, newCrown, crown: r.crown, goalHit });
+    return settle(parts, badges, { score, grade, bestGrade: r.grade, newBest: grade > bestBefore && bestBefore > 0, won, newCrown, crown: r.crown, goalHit });
   }
 
   PA.Store = {

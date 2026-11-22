@@ -173,14 +173,6 @@
     el.className = 'coach' + (tone ? ' ' + tone : '');
   }
 
-  function verdict(text, off) {
-    const el = $('#verdict');
-    el.textContent = text;
-    el.className = 'verdict' + (off ? ' off' : '');
-    void el.offsetWidth;
-    el.classList.add('show');
-  }
-
   function openLevel(wi, li) {
     play.wi = wi; play.li = li;
     play.world = C.WORLDS[wi];
@@ -218,7 +210,7 @@
   function refreshBeatBar() {
     const r = Store.rec(play.level.id);
     const unlocked = r.stars > 0;
-    $('#beat-note').textContent = !unlocked ? 'Finish once to unlock' : r.crown ? 'Best: ' + TEMPO[r.crown].crown + ' crown' : 'Play on the beat to win a crown';
+    $('#beat-note').textContent = !unlocked ? 'Finish once to unlock' : r.crown ? 'Best: ' + TEMPO[r.crown].crown + ' crown, ' + (r.grade || 0) + '%' : r.grade ? 'Best grade: ' + r.grade + '%' : 'Play on the beat to win a crown';
     $$('#beat-group .btn').forEach(b => {
       const t = +b.getAttribute('data-tempo');
       b.classList.toggle('won', r.crown >= t);
@@ -366,8 +358,7 @@
     const res = B.session.press(midi, now() - B.t0);
     if (res.type === 'extra') { playKeys.down(midi, 'bad'); return; }
     playKeys.down(midi, 'ok');
-    play.staff.mark(res.note.index, res.quality === 'perfect' ? 'done' : 'slip');
-    verdict(res.quality === 'perfect' ? 'On the beat!' : res.quality === 'early' ? 'A bit early' : 'A bit late', res.quality !== 'perfect');
+    play.staff.mark(res.note.index, 'done');
     $('#meter-count').textContent = B.session.hits + ' / ' + B.session.total + ' on the beat';
     $('#meter-bar').style.width = (B.session.hits / B.session.total * 100) + '%';
   }
@@ -429,11 +420,12 @@
     const T = TEMPO[tempo];
     const title = res.newCrown ? T.crown + ' crown!' : res.won ? 'Right on the beat!' : 'Nearly there';
     const tip = res.won ? (tempo < 3 ? 'Ready for the ' + TEMPO[tempo + 1].name.toLowerCase() + ' tempo?' : 'That is the fastest tempo. Superb.')
-      : 'A crown needs 8 out of 10 notes on the beat. ' + (tempo > 1 ? 'Try a slower tempo, or practice once more at your own pace.' : 'Practice once more at your own pace, then try again.');
+      : 'A crown needs a grade of 80% or more. ' + (tempo > 1 ? 'Try a slower tempo, or practice once more at your own pace.' : 'Practice once more at your own pace, then try again.');
     openModal(
       '<div class="result"><h2>' + title + '</h2><p class="sub">' + S.hits + ' of ' + S.total + ' notes on the beat at ' + T.bpm + ' beats a minute' +
       (S.extras ? ', ' + S.extras + (S.extras === 1 ? ' stray note' : ' stray notes') : '') + '</p>' +
-      '<div class="big-crown' + (res.won ? ' won c' + tempo : '') + '">' + CROWN + '</div>' +
+      '<div class="grade-row"><div class="big-crown' + (res.won ? ' won c' + tempo : '') + '">' + CROWN + '</div>' +
+      '<div class="grade"><b>' + res.grade + '%</b><small>' + (res.newBest ? 'New best grade' : res.bestGrade > res.grade ? 'Your best: ' + res.bestGrade + '%' : 'Grade') + '</small></div></div>' +
       '<p class="note-line">' + tip + '</p>' + rewardMarkup(res) + '</div>' +
       resultActions('<button class="btn" data-act="beat" data-tempo="' + tempo + '">Try again</button>' +
         (res.won && tempo < 3 ? '<button class="btn" data-act="beat" data-tempo="' + (tempo + 1) + '">' + TEMPO[tempo + 1].name + ' tempo</button>' : '<button class="btn" data-act="again">Practice</button>')),

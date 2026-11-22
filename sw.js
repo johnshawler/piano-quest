@@ -1,6 +1,6 @@
 /* Piano Quest — offline support. Once the game has been opened online,
  * it keeps working without a connection (handy for an iPad at the piano). */
-const CACHE = 'piano-quest-v1';
+const CACHE = 'piano-quest-v2';
 const FILES = [
   './', 'index.html', 'css/style.css', 'manifest.webmanifest',
   'js/glyphs.js', 'js/curriculum.js', 'js/audio.js', 'js/store.js', 'js/staff.js', 'js/input.js', 'js/session.js', 'js/app.js',

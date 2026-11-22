@@ -40,7 +40,7 @@ Each land follows the same progression, so a new key always feels familiar:
 | Reward | How it is earned |
 | --- | --- |
 | Stars (1 to 3) | 1 for finishing, 2 and 3 for fewer slips. One star opens the next exercise. |
-| Crowns | Bronze, silver, gold: 8 notes in 10 on the beat at the slow, steady, quick tempo. |
+| Crowns | Every Beat Challenge run gets a percentage grade. 80% or more wins the crown for that tempo: bronze, silver, gold at slow, steady, quick. |
 | XP and ranks | Every finished run earns XP, with bonuses for new stars and crowns. Ten ranks, from Curious Beginner to Maestro. |
 | Day streak | Days in a row with at least one finished exercise. |
 | Daily goal | Three finished exercises a day. |
