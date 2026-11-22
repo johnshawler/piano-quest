@@ -73,9 +73,26 @@ python3 -m http.server 8080
 
 Then open `http://localhost:8080` (or just open `index.html` in a browser).
 
-To play on an iPad, host the folder on any HTTPS static host (GitHub Pages works: Settings
-→ Pages → deploy from the `main` branch), open it in Safari, then **Share → Add to Home
-Screen**. It then runs full screen and keeps working offline.
+To play on an iPad, open **https://johnshawler.com/piano-quest/** in Safari, then
+**Share → Add to Home Screen**. It then runs full screen and keeps working offline.
+
+### How the live site is deployed
+
+A small Cloudflare Worker (`deploy/proxy-worker.js`, Worker name `piano-quest`) answers
+`johnshawler.com/piano-quest/*` and serves the game's files from the `main` branch of this
+repository, cached for five minutes. Pushing to `main` therefore updates the site; nothing
+else needs to be run. It serves only the game itself (`index.html`, `css/`, `js/`, `icons/`,
+`licenses/`, the manifest and the service worker).
+
+To serve the files from Cloudflare directly instead, with no dependency on GitHub at
+request time, deploy them as static assets from a machine that is logged in to Cloudflare:
+
+```bash
+npm run deploy
+```
+
+That uses `wrangler.jsonc` and replaces the proxy Worker under the same name and routes.
+After that, redeploy with the same command whenever the game changes.
 
 A single self-contained file can be produced with:
 
@@ -97,7 +114,8 @@ js/audio.js           synthesised piano and sound cues (Web Audio, no samples)
 js/app.js             screens and game flow
 js/glyphs.js          music symbol outlines
 sw.js, manifest.webmanifest, icons/   install to Home Screen, offline play
-tools/                validation, rule tests, single-file build
+deploy/, wrangler.jsonc               hosting at johnshawler.com/piano-quest
+tools/                validation, rule tests, single-file and site builds
 ```
 
 ### Adding or editing exercises

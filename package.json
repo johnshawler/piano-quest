@@ -6,6 +6,8 @@
   "scripts": {
     "start": "python3 -m http.server 8080",
     "test": "node tools/validate.mjs && node tools/test-rules.mjs",
-    "build:single": "node tools/build-single.mjs"
+    "build:single": "node tools/build-single.mjs",
+    "build:site": "node tools/build-site.mjs",
+    "deploy": "node tools/build-site.mjs && npx wrangler deploy"
   }
 }
