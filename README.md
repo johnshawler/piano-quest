@@ -80,8 +80,8 @@ To play on an iPad, open **https://johnshawler.com/piano-quest/** in Safari, the
 
 A small Cloudflare Worker (`deploy/proxy-worker.js`, Worker name `piano-quest`) answers
 `johnshawler.com/piano-quest/*` and serves the game's files from the `main` branch of this
-repository, cached for five minutes. Pushing to `main` therefore updates the site; nothing
-else needs to be run. It serves only the game itself (`index.html`, `css/`, `js/`, `icons/`,
+repository. Pushing to `main` therefore updates the site within a few minutes; nothing
+else needs to be run. Browsers always fetch the newest version when online. It serves only the game itself (`index.html`, `css/`, `js/`, `icons/`,
 `licenses/`, the manifest and the service worker).
 
 To serve the files from Cloudflare directly instead, with no dependency on GitHub at

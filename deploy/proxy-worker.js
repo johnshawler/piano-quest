@@ -1,6 +1,8 @@
 // Serves Piano Quest at johnshawler.com/piano-quest straight from the main
 // branch of the public GitHub repo, so a push to main updates the site within
-// about five minutes. Only the game's own files are served.
+// a few minutes. Only the game's own files are served. Copies are kept at
+// Cloudflare for two minutes; browsers are told to check back on every load so
+// players never get stuck on an old version.
 const ORIGIN = 'https://raw.githubusercontent.com/johnshawler/piano-quest/main';
 const PREFIX = '/piano-quest';
 const ALLOWED = /^\/(index\.html|manifest\.webmanifest|sw\.js|css\/[\w-]+\.css|js\/[\w-]+\.js|icons\/[\w-]+\.(png|svg)|licenses\/[\w-]+\.txt)$/;
@@ -20,19 +22,19 @@ export default {
 
     const cache = caches.default;
     const key = new Request(url.origin + PREFIX + path);
-    let response = await cache.match(key);
-    if (!response) {
+    let stored = await cache.match(key);
+    if (!stored) {
       const upstream = await fetch(ORIGIN + path);
       if (!upstream.ok) return new Response('Not found', { status: upstream.status === 404 ? 404 : 502 });
-      response = new Response(upstream.body, {
-        headers: {
-          'Content-Type': TYPES[path.split('.').pop()],
-          'Cache-Control': 'public, max-age=300',
-          'X-Content-Type-Options': 'nosniff',
-        },
-      });
-      ctx.waitUntil(cache.put(key, response.clone()));
+      stored = new Response(upstream.body, { headers: { 'Cache-Control': 'public, max-age=120' } });
+      ctx.waitUntil(cache.put(key, stored.clone()));
     }
-    return response;
+    return new Response(stored.body, {
+      headers: {
+        'Content-Type': TYPES[path.split('.').pop()],
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'X-Content-Type-Options': 'nosniff',
+      },
+    });
   },
 };
